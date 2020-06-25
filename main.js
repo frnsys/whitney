@@ -52,23 +52,27 @@ function activate() {
     // Setting as a background image gives a bit more control
     img.style.backgroundImage = `url(${imgUrl})`;
     img.style.backgroundRepeat = 'no-repeat';
+    img.style.backgroundSize = 'auto';
+
+    // Position so it looks like the wood is behind the page
+    let pos = getPos(img);
+    let top = pos.top % imgDims.height;
+    let left = pos.left % imgDims.width;
+    if (top + img.height > imgDims.height) {
+      top -= (top + img.height) - imgDims.height;
+    }
+    if (left + img.width > imgDims.width) {
+      left -= (left + img.width) - imgDims.width;
+    }
 
     // Video embed previews have additional styling that
-    // mess with the background position offset, so skip those
-    if (!img.classList.contains('video-embed__preview')) {
-
-      // Position so it looks like the wood is behind the page
-      let pos = getPos(img);
-      let top = pos.top % imgDims.height;
-      let left = pos.left % imgDims.width;
-      if (top + img.height > imgDims.height) {
-        top -= (top + img.height) - imgDims.height;
-      }
-      if (left + img.width > imgDims.width) {
-        left -= (left + img.width) - imgDims.width;
-      }
+    // mess with the background position offset,
+    // so skip the vertical position there
+    if (img.classList.contains('video-embed__preview')) {
+      img.style.backgroundPosition = `-${left}px 0%`;
+    } else {
       img.style.backgroundPosition = `-${left}px -${top}px`;
-    };
+    }
 
     // Do our best to honor alt text needs
     img.alt = '';
