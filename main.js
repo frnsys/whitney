@@ -1,7 +1,7 @@
 const imgUrl = 'https://client.frnsys.com/aa/boards.jpg';
 const imgDims = {
-  width: 1800,
-  height: 1056
+  width: 1800/2, // scale down for sharpness
+  height: 1056/2
 };
 const targetEls = 'img, .youtube-image, .video-embed__preview, iframe';
 
@@ -24,6 +24,20 @@ function getPos(elem) {
   return { top: Math.round(top), left: Math.round(left) };
 }
 
+let images = [];
+function adjust() {
+  // Illusion of fixed background
+  // Works better on requestAnimationFrame
+  // than as a scroll event trigger
+  let scrollY = window.pageYOffset;
+  images.forEach((img) => {
+    let top = parseInt(img.dataset.baseTop);
+    img.style.backgroundPosition = `-${img.dataset.baseLeft}px ${(-top+scrollY)%imgDims.height}px`;
+  });
+
+  requestAnimationFrame(adjust);
+}
+
 function activate() {
   // Set background to black, text to grey
   document.documentElement.style.setProperty('--color-background', 'black');
@@ -31,7 +45,7 @@ function activate() {
 
   // Hide Whitney logo image
   let logo = document.getElementById('w__text');
-  if (logo) logo.style.display = 'none';
+  if (logo) logo.parentNode.removeChild(logo);
 
   [...document.querySelectorAll(targetEls)].forEach((img) => {
     // Replace iframes with imgs
@@ -56,8 +70,12 @@ function activate() {
 
     // Setting as a background image gives a bit more control
     img.style.backgroundImage = `url(${imgUrl})`;
-    img.style.backgroundRepeat = 'no-repeat';
-    img.style.backgroundSize = 'auto';
+    img.style.backgroundRepeat = 'repeat';
+    // img.style.backgroundSize = 'auto';
+    img.style.backgroundSize = `${imgDims.width}px ${imgDims.height}px`;
+    // img.style.transition = 'background-position 0.1s linear';
+
+	  img.style['-webkit-transform'] = 'translate3d(0, 0, 0)';
 
     // Position so it looks like the wood is behind the page
     let pos = getPos(img);
@@ -73,6 +91,8 @@ function activate() {
     // Video embed previews have additional styling that
     // mess with the background position offset,
     // so skip the vertical position there
+    img.dataset.baseTop = top;
+    img.dataset.baseLeft = left;
     if (img.classList.contains('video-embed__preview')) {
       img.style.backgroundPosition = `-${left}px 0%`;
     } else {
@@ -82,8 +102,12 @@ function activate() {
     // Do our best to honor alt text needs
     img.alt = '';
     img.role = 'img';
-    img.setAttribute('aria-label', 'Wood paneling');
+    img.setAttribute('aria-label', 'Windows boarded up with wood');
+
+    images.push(img);
   });
+
+  adjust();
 }
 
 activate();
