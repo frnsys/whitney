@@ -1,7 +1,7 @@
 const imgUrl = 'https://client.frnsys.com/aa/boards.jpg';
 const imgDims = {
-  width: 1200,
-  height: 1392
+  width: 1800,
+  height: 1056
 };
 const targetEls = 'img, .youtube-image, .video-embed__preview, iframe';
 
@@ -27,7 +27,11 @@ function getPos(elem) {
 function activate() {
   // Set background to black, text to grey
   document.documentElement.style.setProperty('--color-background', 'black');
-  document.documentElement.style.setProperty('--color-text', '#888888');
+  document.documentElement.style.setProperty('--color-text', '#666666');
+
+  // Hide Whitney logo image
+  let logo = document.getElementById('w__text');
+  if (logo) logo.style.display = 'none';
 
   [...document.querySelectorAll(targetEls)].forEach((img) => {
     // Replace iframes with imgs
