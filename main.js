@@ -50,7 +50,8 @@ function activate() {
     img.style.height = `${img.height}px`;
 
     // Clear existing image
-    img.src = '';
+    // Use an empty pixel to avoid the automatic border around images with no src
+    img.src = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
     img.srcset = '';
 
     // Setting as a background image gives a bit more control
