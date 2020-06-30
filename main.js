@@ -24,20 +24,6 @@ function getPos(elem) {
   return { top: Math.round(top), left: Math.round(left) };
 }
 
-let images = [];
-function adjust() {
-  // Illusion of fixed background
-  // Works better on requestAnimationFrame
-  // than as a scroll event trigger
-  let scrollY = window.pageYOffset;
-  images.forEach((img) => {
-    let top = parseInt(img.dataset.baseTop);
-    img.style.backgroundPosition = `-${img.dataset.baseLeft}px ${(-top+scrollY)%imgDims.height}px`;
-  });
-
-  requestAnimationFrame(adjust);
-}
-
 function activate() {
   // Set background to black, text to grey
   document.documentElement.style.setProperty('--color-background', 'black');
@@ -103,11 +89,7 @@ function activate() {
     img.alt = '';
     img.role = 'img';
     img.setAttribute('aria-label', 'Windows boarded up with wood');
-
-    images.push(img);
   });
-
-  adjust();
 }
 
 activate();
